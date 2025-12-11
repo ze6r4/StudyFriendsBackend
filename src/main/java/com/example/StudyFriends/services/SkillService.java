@@ -2,7 +2,6 @@ package com.example.StudyFriends.services;
 
 import com.example.StudyFriends.exceptions.ResourceNotFoundException;
 import com.example.StudyFriends.model.Player;
-import com.example.StudyFriends.model.Session;
 import com.example.StudyFriends.model.Skill;
 import com.example.StudyFriends.repositories.PlayerRep;
 import com.example.StudyFriends.repositories.SkillRep;
