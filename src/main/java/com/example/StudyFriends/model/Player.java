@@ -34,7 +34,7 @@ public class Player {
     @JoinColumn(name = "appearance_id")
     private Appearance appearance;
 
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "player",fetch = FetchType.EAGER)
     private List<Friend> friends = new ArrayList<>();
 
     @OneToMany(mappedBy = "player")

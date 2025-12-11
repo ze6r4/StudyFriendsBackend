@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SessionRep extends JpaRepository<Session, Long> {
+public interface SessionRep extends JpaRepository<Session, Integer> {
 
 
 }

@@ -1,4 +1,6 @@
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
   application:
     name: StudyFriends
   jackson:
@@ -10,7 +12,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
 #        dialect: org.hibernate.dialect.MySQL8Dialect
@@ -19,3 +21,6 @@ spring:
     generate-ddl: true
 server:
   port: 8081
+web:
+  resources:
+    add-mappings: false

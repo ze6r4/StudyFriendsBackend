@@ -1,4 +1,13 @@
-<body>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Timer Settings</title>
+        <!--link rel="stylesheet" href="css/main.css"!-->
+
+    </head>
+    <body>
     <div class="range-group">
         <div class="range-label">
             <p>Минуты работы: <span id="workValue" class="range-value">?</span> мин</p>
@@ -25,10 +34,10 @@
             <p>ID друга</p>
         </label>
         <select id="selectFriend">
-            <option value="1">Ник (ID: 1)</option>  
-            <option value="2">НЕТУ Сара (ID: 2)</option>  
+            <option value="1">Ник (ID: 1)</option>
+            <option value="2">НЕТУ Сара (ID: 2)</option>
             <option value="3">НЕТУ Кэйти (ID: 3)</option>
-            <option value="4">НЕТЮ Боби (ID: 4)</option>  
+            <option value="4">НЕТЮ Боби (ID: 4)</option>
         </select>
     </div>
 
@@ -37,19 +46,20 @@
             <p>Навык</p>
         </label>
         <select id="selectSkill">
-            <option value="1">Рисование (ID: 1)</option>  
-            <option value="2">Программирование (ID: 2)</option>  
+            <option value="1">Рисование (ID: 1)</option>
+            <option value="2">Программирование (ID: 2)</option>
             <option value="3">Уборка (ID: 3)</option>
-            <option value="4">Спорт (ID: 4)</option>  
+            <option value="4">Спорт (ID: 4)</option>
         </select>
     </div>
-    
+
     <div class="result-of-settings">
         <p id="totalTime">Время сессии: ?</p>
         <p id="totalCoins">Количество монет: ?</p>
         <p id="totalExp">Очки навыка: ? EXP</p>
     </div>
-    
+
     <button onclick="startSession()">Начать сессию</button>
-    <script src="../../js/session-settings.js"></script>
-</body>
+    <script src="/js/timer-settings.js"></script>
+    </body>
+</html>

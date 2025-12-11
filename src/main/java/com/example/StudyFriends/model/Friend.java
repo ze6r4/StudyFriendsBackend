@@ -32,7 +32,7 @@ public class Friend {
     @Column(name = "is_favourite", nullable = false)
     private Boolean isFavourite;
 
-    @OneToMany(mappedBy = "playerFriend")
+    @OneToMany(mappedBy = "friend")
     private List<Session> sessions = new ArrayList<>();
 
     @OneToMany(mappedBy = "playerFriend")
