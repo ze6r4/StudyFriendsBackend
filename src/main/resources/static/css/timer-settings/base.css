@@ -134,19 +134,17 @@ button:active {
 
 .slider-value {
     position: absolute;
-    top: 28px; /* расстояние под ползунком */
+    top: 28px; 
     left: 0;
     transform: translateX(-50%);
     font-size: 14px;
 }
 .slider-wrapper {
     position: relative;
-    width: 100%;      /* было 300px — теперь растягивается */
-    padding-bottom: 24px;  /* даёт место числу внизу */
+    width: 100%;    
+    padding-bottom: 24px; 
 }
 /* Опускаем трек как элемент */
 .range-input {
-    margin-top: 10px; /* 🔥 опускает саму линию вниз */
+    margin-top: 10px; 
 }
-
-/* выбор */

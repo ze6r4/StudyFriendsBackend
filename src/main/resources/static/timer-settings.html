@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Timer Settings</title>
 
-    <link rel="stylesheet" href="css/timer-settings.css">
+   
+    <link rel="stylesheet" href="css/timer-settings/base.css">
+    <link rel="stylesheet" href="css/timer-settings/custom-select.css">
 </head>
 
 <body>
@@ -61,16 +63,41 @@
             </select>
         </div>
 
-        <div class="range-group">
-            <label for="selectSkill">Навык</label>
-            <select id="selectSkill" class="custom-select">
-                <option value="1">Рисование (ID: 1)</option>
-                <option value="2">Программирование (ID: 2)</option>
-                <option value="3">Дизайн (ID: 3)</option>
-                <option value="4">Музыка (ID: 4)</option>
-            </select>
+
+      <div class="range-group">
+        <label id="selectSkillLabel" for="selectSkillButton">Навык</label>
+        <div class="custom-select" id="selectSkill">
+            <button class="select-button" id="selectSkillButton"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-labelledby="selectSkillLabel selectSkillValue">
+                <span class="selected-value" id="selectSkillValue">Выберите навык</span>
+                <span class="arrow"></span>
+            </button>
+            <ul class="select-dropdown hidden" role="listbox" aria-labelledby="selectSkillLabel">
+                <!-- Каждый li теперь содержит span для текста и кнопку для удаления -->
+                <li role="option" id="skillOption1">
+                    <span class="item-text">Рисование</span>
+                    <!-- type="button" предотвращает случайные отправки форм -->
+                    <button type="button" class="delete-item-btn" aria-label="Удалить Рисование">✕</button>
+                </li>
+                <li role="option" id="skillOption2">
+                    <span class="item-text">Программирование</span>
+                    <button type="button" class="delete-item-btn" aria-label="Удалить Программирование">✕</button>
+                </li>
+                <li role="option" id="skillOption3">
+                    <span class="item-text">Дизайн</span>
+                    <button type="button" class="delete-item-btn" aria-label="Удалить Дизайн">✕</button>
+                </li>
+                <li role="option" id="skillOption4">
+                    <span class="item-text">Музыка</span>
+                    <button type="button" class="delete-item-btn" aria-label="Удалить Музыка">✕</button>
+                </li>
+            </ul>
         </div>
-                
+    </div>
+
+
 
         <div class="range-group">
             <label id="totalTime">Время сессии: ?</label>
@@ -86,5 +113,6 @@
 
 <script src="js/api/timer-api.js"></script>
 <script src="js/ui/timer-ui.js"></script>
+<script src="js/ui/custom-select.js"></script>
 </body>
 </html>
