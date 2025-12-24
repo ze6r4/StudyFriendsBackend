@@ -4,13 +4,12 @@ document.addEventListener("DOMContentLoaded", function() {
   initializeCustomSelectsSkills();
 });
 
-// ---------- НАВЫКИ ----------------
 function generateSkillHtml(skills) {
     let html = '';
 
     skills.forEach((skill) => {
         html += `
-            <li id="skillOption${skill.skillId}" role="option">
+            <li id="skillOption${skill.skillId}" role="option" data-skill-id="${skill.skillId}">
                 <span class="item-text">${skill.name}</span>
                 <button type="button" class="delete-item-btn" aria-label="Удалить ${skill.name}">✕</button>
             </li>

@@ -1,23 +1,25 @@
 // Импортируем всё нужное
 import {postSession } from '../../../shared/api.js';
-const API_BASE = 'http://localhost:8081/api';
+const PATH = 'http://localhost:8081/pages';
 const PLAYER_ID = 1;
 
 
 async function startSession(){
 
+    const skillId = document.querySelector('.select-dropdown li[aria-selected="true"]')?.dataset.skillId || null
+    const friendId = document.querySelector('.friend-card.selected')?.dataset.friendId || 1;
     const sessionData = {
         workMinutes: parseInt(document.getElementById('workMinutes').value, 10),
         restMinutes: parseInt(document.getElementById('restMinutes').value, 10),
         cycles: parseInt(document.getElementById('cyclesAmount').value, 10),
         playerId: PLAYER_ID,
-        friendId: parseInt(document.getElementById('selectFriend').value, 10),
-        skillId: parseInt(document.getElementById('selectSkill').value, 10)
+        friendId: friendId,
+        skillId: skillId
     };
     console.log(sessionData);
     await postSession(sessionData);
     localStorage.setItem('currentSession', sessionData);
-    window.location.href = `${API_BASE}/timer.html`;
+    window.location.href = `${PATH}/timer/timer.html`;
 }
 
 window.startSession = startSession;

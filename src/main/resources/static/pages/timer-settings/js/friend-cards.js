@@ -18,14 +18,24 @@ async function initializeCustomSelectsFriends() {
         friendsGrid.innerHTML = '<p>Ошибка загрузки</p>';
     }
 }
+document.querySelectorAll('.friend-card').forEach(card => {
+    card.addEventListener('click', function() {
+        // Убираем выделение у всех друзей
+        document.querySelectorAll('.friend-card').forEach(c => {
+            c.classList.remove('selected');
+        });
 
+        // Выделяем текущего
+        this.classList.add('selected');
+    });
+});
 function generateFriendHtml(friends) {
     let html = '';
     const BASE_PATH = '../../assets/front/images/characters';
 
     friends.forEach((friend) => {
         html += `
-            <div class="friend-card">
+            <div class="friend-card" data-friend-id="${friend.friendId}">
                 <img src="${BASE_PATH}/${friend.cardImage}.png"
                      alt="${friend.name}"
                      class="friend-avatar">
