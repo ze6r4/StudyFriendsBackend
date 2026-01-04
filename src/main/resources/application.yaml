@@ -18,10 +18,6 @@ spring:
     name: StudyFriends
   jackson:
     default-property-inclusion: NON_NULL
-  datasource:
-    username: root
-    password: pass
-    url: jdbc:mysql://localhost:3306/study_friends
   jpa:
     open-in-view: false
     hibernate:
