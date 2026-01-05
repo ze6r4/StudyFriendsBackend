@@ -18,7 +18,7 @@ export async function getPlayerSkillsFull(playerId=1) {
         if (!response.ok) throw new Error('Ошибка при получении навыков игрока');
 
         const result = await response.json();
-        console.log('Навыки!', result);
+        console.log('Навыки из базы данных!', result);
         return result;
     } catch (error) {
         errorMessage('сервер не нашел активные навыки в сложном запросе')
@@ -40,7 +40,7 @@ export async function postSkill(skillData) {
             console.log('Навыки сохранены!', result);
 
         } catch (error) {
-            errorMessage(error.message);
+            errorMessage('Навыки не сохранены.. ' + error.message);
         }
 }
 // Обновляем навык (например, деактивируем)

@@ -62,3 +62,4 @@ function colorTrack(sliderId) {
 colorTrack("workMinutes");
 colorTrack("restMinutes");
 colorTrack("cyclesAmount");
+colorTrack("newSkillLevel");

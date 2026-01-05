@@ -1,7 +1,6 @@
 import { getSkills } from '../../../shared/api.js';
 import { openAddSkillModal } from './new-skill-modal.js';
 
-
 export let skillsChanged = false;
 const PLAYER_ID = 1;
 const ADD_ITEM_ID = 'add-skill-item';
@@ -188,8 +187,9 @@ function handleDelete(item, customSelect) {
 ======================= */
 
 function handleAddSkill(customSelect) {
-  toggleDropdown(customSelect, false);
+   //toggleDropdown(customSelect, false);
 
+   skillsChanged = true;
    openAddSkillModal(customSelect);
 }
 

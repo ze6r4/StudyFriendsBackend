@@ -29,7 +29,7 @@ async function startSession(){
 
 async function saveSkills() {
     const customSelect = document.getElementById('selectSkill');
-    //измененные навыки из фронта
+    // 1️⃣ измененные навыки из фронта
     const newSkills = mapSkillsFromDom(customSelect, PLAYER_ID);
 
     // 1️⃣ старые навыки из бд
@@ -37,23 +37,32 @@ async function saveSkills() {
 
     // 2️⃣ Обработка старых навыков
     for (const oldSkill of oldSkills) {
-        const stillSelected = newSkills.some(n => n.skillId === oldSkill.skillId);
-        if (!stillSelected) {
+        // скилл из фронта есть в списке скиллов из бд
+        const isNotDeleted = newSkills.some(n => n.skillId === oldSkill.skillId);
+        if (!isNotDeleted) {
             if (oldSkill.usedInSessions) {
                 // деактивируем (is_active = 0)
                 await updatePlayerSkill(oldSkill.skillId, { is_active: 0 });
+                console.log('архивирую навык ${...oldSkill}')
             } else {
                 // полностью удаляем
                 await deletePlayerSkill(oldSkill.skillId);
+                console.log('полностью удаляю навык ${...oldSkill}')
             }
         }
+
     }
 
     // 3️⃣ Добавление новых навыков
     for (const skill of newSkills) {
+
         const exists = oldSkills.some(o => o.skillId === skill.skillId);
         if (!exists) {
-            await postSkill({ ...skill, is_active: 1 });
+            const savedSkill = await postSkill({ ...skill, is_active: 1 });
+            console.log('Отправлен новый навык:', savedSkill);
+
+            // заменяем временный skillId на реальный из БД
+            skill.skillId = savedSkill.skillId;
         }
     }
 }

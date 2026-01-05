@@ -86,3 +86,13 @@
 #saveSkillBtn:hover {
     background-color: #ffc0cb;
 }
+input[type="range"] {
+  --pos: 0%;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #4caf50 var(--pos), #ddd var(--pos));
+}
+
+
