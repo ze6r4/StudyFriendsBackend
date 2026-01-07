@@ -86,6 +86,7 @@ public class SkillController {
             Skill skill = new Skill();
             skill.setName(dto.getName());
             skill.setProgress(dto.getProgress());
+            skill.setIsActive(dto.getIsActive()); //ура!!! ура!!!!
             Player player = playerService.getPlayerById(dto.getPlayerId())
                     .orElseThrow(() -> new ResourceNotFoundException("Player", dto.getPlayerId()));
             skill.setPlayer(player);

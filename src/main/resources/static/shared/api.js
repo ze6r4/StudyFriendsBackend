@@ -6,6 +6,7 @@ export async function getSkills(playerId = 1) {
     try {
         const response = await fetch(`${API_BASE}/skills?playerId=${playerId}`);
         const skills = await response.json();
+        console.log('Навыки из базы данных обычные', skills);
         return skills;
     } catch (error) {
         errorMessage('сервер не нашел твои навыки :(');
@@ -17,9 +18,9 @@ export async function getPlayerSkillsFull(playerId=1) {
         const response = await fetch(`${API_BASE}/skills/full?playerId=${playerId}`);
         if (!response.ok) throw new Error('Ошибка при получении навыков игрока');
 
-        const result = await response.json();
-        console.log('Навыки из базы данных!', result);
-        return result;
+        const skills = await response.json();
+        console.log('Навыки из базы данных в сложном get-запросе!', skills);
+        return skills;
     } catch (error) {
         errorMessage('сервер не нашел активные навыки в сложном запросе')
     }
@@ -38,9 +39,11 @@ export async function postSkill(skillData) {
             }
             const result = await response.json();
             console.log('Навыки сохранены!', result);
+            return result;
 
         } catch (error) {
             errorMessage('Навыки не сохранены.. ' + error.message);
+            return null;
         }
 }
 // Обновляем навык (например, деактивируем)

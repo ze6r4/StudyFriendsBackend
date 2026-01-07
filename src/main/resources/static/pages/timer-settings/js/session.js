@@ -3,15 +3,13 @@ import {postSession, getPlayerSkillsFull, updatePlayerSkill, deletePlayerSkill, 
 const PATH = 'http://localhost:8081/pages';
 const PLAYER_ID = 1;
 
-import { mapSkillsFromDom } from './skills-mapper.js';
-import { skillsChanged } from './skills-select-generation.js';
+import { skillsChanged } from './custom-select.logic.js';
 
 async function startSession(){
-    if (skillsChanged === true) {
+    if (skillsChanged.value === true) {
         await saveSkills();
     }
-
-    const skillId = document.querySelector('.select-dropdown li[aria-selected="true"]')?.dataset.skillId || null
+    const skillId = document.querySelector('.select-dropdown li[aria-selected="true"]')?.dataset.skillId || null;
     const friendId = document.querySelector('.friend-card.selected')?.dataset.friendId || 1;
     const sessionData = {
         workMinutes: parseInt(document.getElementById('workMinutes').value, 10),
@@ -21,33 +19,31 @@ async function startSession(){
         friendId: friendId,
         skillId: skillId
     };
-    console.log(sessionData);
     await postSession(sessionData);
     localStorage.setItem('currentSession', JSON.stringify(sessionData));
-    window.location.href = `${PATH}/timer/timer.html`;
+    //!!!!!!!!!! window.location.href = `${PATH}/timer/timer.html`;
 }
 
 async function saveSkills() {
     const customSelect = document.getElementById('selectSkill');
-    // 1️⃣ измененные навыки из фронта
-    const newSkills = mapSkillsFromDom(customSelect, PLAYER_ID);
 
-    // 1️⃣ старые навыки из бд
+    const newSkills = mapSkillsFromDom(customSelect, PLAYER_ID);
+    console.log('НАВЫКИ ИЗ ДОМА', newSkills);
+
     const oldSkills = await getPlayerSkillsFull(PLAYER_ID);
 
-    // 2️⃣ Обработка старых навыков
     for (const oldSkill of oldSkills) {
-        // скилл из фронта есть в списке скиллов из бд
-        const isNotDeleted = newSkills.some(n => n.skillId === oldSkill.skillId);
-        if (!isNotDeleted) {
+        // Если навык есть в БД, но его нет в DOM
+        const newContainsOld = newSkills.some(n => n.skillId === oldSkill.skillId);
+        if (!newContainsOld) {
             if (oldSkill.usedInSessions) {
                 // деактивируем (is_active = 0)
                 await updatePlayerSkill(oldSkill.skillId, { is_active: 0 });
-                console.log('архивирую навык ${...oldSkill}')
+                console.log('архивирую навык', oldSkill.name)
             } else {
                 // полностью удаляем
                 await deletePlayerSkill(oldSkill.skillId);
-                console.log('полностью удаляю навык ${...oldSkill}')
+                console.log('полностью удаляю навык', oldSkill.name)
             }
         }
 
@@ -55,16 +51,44 @@ async function saveSkills() {
 
     // 3️⃣ Добавление новых навыков
     for (const skill of newSkills) {
-
         const exists = oldSkills.some(o => o.skillId === skill.skillId);
         if (!exists) {
-            const savedSkill = await postSkill({ ...skill, is_active: 1 });
-            console.log('Отправлен новый навык:', savedSkill);
+            const skillToSend = {
+                playerId: skill.playerId,
+                name: skill.name,
+                progress: skill.progress,
+                isActive: true
+            };
 
-            // заменяем временный skillId на реальный из БД
+            const savedSkill = await postSkill(skillToSend);
             skill.skillId = savedSkill.skillId;
+
+            updateFakeIdToRealHtml(skill.fakeId,skill.skillId);
         }
     }
 }
+
+function mapSkillsFromDom(customSelect, playerId) {
+  return Array.from(
+    customSelect.querySelectorAll('.select-dropdown li')
+  )
+    .filter(li => !li.classList.contains('add-skill-item'))
+    .map(li => ({
+      skillId: Number(li.dataset.skillId),
+      fakeId: Number(li.dataset.fakeId),
+      playerId: playerId,
+      name: li.querySelector('.item-text')?.textContent.trim(),
+      progress: Number(li.dataset.progress ?? 0),
+      isActive: 1
+    }));
+}
+
+function updateFakeIdToRealHtml(fakeId,realId) {
+    const li = document.querySelector(`#skillOption-${fakeId}`);
+    if (li) {
+        li.dataset.skillId = realId;
+    }
+}
+
 window.startSession = startSession;
 

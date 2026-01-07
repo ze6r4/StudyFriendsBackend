@@ -21,13 +21,14 @@ export function openAddSkillModal(customSelect) {
   updateSliderUi(newSkillLevel);
 
   saveSkillBtn.onclick = () => {
-
+    const enterName = newSkillName.value.trim();
     const skill = {
-                name: newSkillName.value.trim(),
+                fakeId: Date.now(),
+                name: enterName,
                 level: parseInt(newSkillLevel.value, 10),
                 isActive: true
             };
-    if (!name) {
+    if (!enterName) {
       alert("Введите название навыка!");
       return;
     }

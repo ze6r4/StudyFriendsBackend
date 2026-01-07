@@ -9,7 +9,6 @@ async function initializeCustomSelectsFriends() {
 
     try {
         const friends = await getFriends(1);
-        console.log(friends.length)
         if (friends && friends.length > 0) {
             friendsGrid.innerHTML = generateFriendHtml(friends);
         }
