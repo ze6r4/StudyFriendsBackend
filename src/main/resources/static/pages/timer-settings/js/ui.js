@@ -42,24 +42,31 @@ document.getElementById("cyclesAmount").addEventListener("input", updateTotalTim
 updateTotalTime();
 
 // окрас ползунка
-function colorTrack(sliderId) {
+export function updateSliderUi(slider) {
+    if (!slider) return;
+
+    const min = Number(slider.min);
+    const max = Number(slider.max);
+    const val = Number(slider.value);
+
+    const percent = ((val - min) / (max - min)) * 100 + "%";
+    slider.style.setProperty("--pos", percent);
+}
+
+// инициализация одного слайдера
+export function initSlider(sliderId) {
     const slider = document.getElementById(sliderId);
 
-    function update() {
-        const min = Number(slider.min);
-        const max = Number(slider.max);
-        const val = Number(slider.value);
+    if (!slider) return;
 
-        const percent = ((val - min) / (max - min)) * 100 + "%";
-
-        slider.style.setProperty("--pos", percent);
-    }
+    const update = () => updateSliderUi(slider);
 
     slider.addEventListener("input", update);
     update();
 }
 
-colorTrack("workMinutes");
-colorTrack("restMinutes");
-colorTrack("cyclesAmount");
-colorTrack("newSkillLevel");
+
+initSlider("workMinutes");
+initSlider("restMinutes");
+initSlider("cyclesAmount");
+initSlider("newSkillLevel");

@@ -1,4 +1,5 @@
-import { addNewSkillToDropdown } from './skills-select-generation.js';
+import { addNewSkillToDropdown } from './custom-select.html.js';
+import { updateSliderUi } from './ui.js';
 
 const addSkillModal = document.getElementById('addSkillModal');
 const closeAddSkillModal = document.getElementById('closeAddSkillModal');
@@ -17,17 +18,20 @@ export function openAddSkillModal(customSelect) {
   newSkillLevel.value = 5;
   skillLevelValue.textContent = '5';
   newSkillName.focus();
+  updateSliderUi(newSkillLevel);
 
   saveSkillBtn.onclick = () => {
-    const name = newSkillName.value.trim();
-    const level = parseInt(newSkillLevel.value, 10);
 
+    const skill = {
+                name: newSkillName.value.trim(),
+                level: parseInt(newSkillLevel.value, 10),
+                isActive: true
+            };
     if (!name) {
       alert("Введите название навыка!");
       return;
     }
-
-    addNewSkillToDropdown(customSelect, { name, level });
+    addNewSkillToDropdown(customSelect, skill);
     addSkillModal.classList.add('hidden');
   };
 }
