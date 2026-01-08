@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Таймер Pomodoro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/timer.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
+    <title>Pomodoro</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/timer.css">
 </head>
 <body>
+
+<div class="background"></div>
+
 <div class="container">
+
+    <!-- БЛОКНОТ -->
     <div class="notebook-section">
         <div class="notebook">
-            <!-- Кольца блокнота - эти строки относятся к созданию колец -->
+
             <div class="notebook-rings">
                 <div class="ring"></div>
                 <div class="ring"></div>
@@ -27,54 +30,40 @@
             </div>
 
             <div class="notebook-content">
-                <h1 class="notebook-title">Время работы</h1>
+                <h1 class="notebook-title">Заметки</h1>
 
-                <div class="timer-section">
-                    <div class="timer-display">
-                        <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
-                    </div>
-                </div>
-
-                <div class="notes-section">
-                    <h2 class="notes-title">Мои заметки</h2>
-                    <div
+                <div
                         id="notesContent"
                         class="notes-content"
                         contenteditable="true"
-                    >
-                        <p>Можно редактировать этот текст прямо здесь...</p>
-                    </div>
+                >
+                    <p>Можно редактировать этот текст прямо здесь...</p>
                 </div>
-
             </div>
+
         </div>
     </div>
 
-    <div class="image-section">
-        <div class="image-placeholder">
-            <i class="fas fa-user-graduate placeholder-icon"></i>
-            <p class="placeholder-text">Здесь будет изображение персонажа, который учится</p>
-        </div>
+</div>
 
-        <div class="controls">
-            <button class="btn btn-start" id="startBtn">
-                <i class="fas fa-play"></i>
-                <span>Начать</span>
-            </button>
+<!-- ТАЙМЕР + КНОПКА -->
+<div class="bottom-center">
 
-            <!-- Кнопка "Сдаться" скрыта -->
-            <button class="btn btn-giveup" id="giveupBtn" style="display: none;">
-                <i class="fas fa-flag"></i>
-                <span>Сдаться</span>
-            </button>
-        </div>
+    <div class="timer-standalone">
+        <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
     </div>
+
+    <button class="btn btn-start" id="startBtn">
+        <span>Начать</span>
+    </button>
+
 </div>
 
 <footer class="footer">
     <button id="devModeBtn">Режим разработчика</button>
-    <button id="resetTimerDevBtn">Очистить все localStorage</button>
+    <button id="resetTimerDevBtn">Очистить localStorage</button>
 </footer>
+
 <script type="module" src="js/timer.js"></script>
 <script src="js/notes-storage.js" defer></script>
 
