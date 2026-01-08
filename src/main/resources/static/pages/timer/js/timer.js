@@ -188,8 +188,7 @@ function resetTimerForTesting() {
     stopTimer();
 
     // Полностью чистим сохранённое состояние таймера
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(CYCLE_KEY);
+    localStorage.clear();
 
     // Сбрасываем внутреннее состояние
     currentPhase = 'WORK';
