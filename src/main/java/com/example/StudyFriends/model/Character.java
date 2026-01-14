@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +38,4 @@ public class Character {
 
     @Column(name = "card_image")
     private String cardImage;
-
-    @OneToMany(mappedBy = "character")
-    private List<Friend> playerFriends = new ArrayList<>();
 }

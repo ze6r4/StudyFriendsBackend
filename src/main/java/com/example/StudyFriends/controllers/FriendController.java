@@ -31,4 +31,15 @@ public class FriendController {
                     .body("Ошибка: " + ex.getMessage());
         }
     }
+    @GetMapping("/friend")
+    public ResponseEntity<?> getFriendOfPlayer(@RequestParam Long playerId, @RequestParam Long friendId) {
+        try{
+            Friend friend = friendService.getFriendByIdAndPlayer(friendId,playerId).get();
+            return ResponseEntity.ok(FriendDto.fromEntity(friend));
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Ошибка: " + ex.getMessage());
+        }
+    }
 }

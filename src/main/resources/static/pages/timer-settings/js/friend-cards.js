@@ -1,48 +1,68 @@
 import { getFriends } from '../../../shared/api.js';
+import { generateFriendHtml } from './friend-cards.html.js';
 
-document.addEventListener("DOMContentLoaded", function() {
-  initializeCustomSelectsFriends();
-});
+let selectedFriendId = null;
+let friendsGrid = null;
 
-async function initializeCustomSelectsFriends() {
-    const friendsGrid = document.querySelector(".friends-grid");
+document.addEventListener("DOMContentLoaded", initFriends);
 
-    try {
-        const friends = await getFriends(1);
-        if (friends && friends.length > 0) {
-            friendsGrid.innerHTML = generateFriendHtml(friends);
-        }
-    } catch (error) {
-        console.error('💨 Ошибка загрузки друзей:', error);
-        friendsGrid.innerHTML = '<p>Ошибка загрузки</p>';
+async function initFriends() {
+    friendsGrid = document.querySelector(".friends-grid");
+
+    const friends = await loadFriends();
+    renderFriends(friends);
+
+    bindFriendCardClick();
+}
+
+async function loadFriends() {
+    const friends = await getFriends(1);
+    return Array.isArray(friends) ? friends : [];
+}
+
+function renderFriends(friends) {
+    if (friends.length === 0) {
+        friendsGrid.innerHTML = '<p>Ошибка загрузки 😃</p>';
+        return;
     }
+
+    friendsGrid.innerHTML = generateFriendHtml(friends);
 }
-document.querySelectorAll('.friend-card').forEach(card => {
-    card.addEventListener('click', function() {
-        // Убираем выделение у всех друзей
-        document.querySelectorAll('.friend-card').forEach(c => {
-            c.classList.remove('selected');
-        });
 
-        // Выделяем текущего
-        this.classList.add('selected');
-    });
-});
-function generateFriendHtml(friends) {
-    let html = '';
-    const BASE_PATH = '../../assets/front/images/characters';
+/* =========================
+   Обработка кликов
+========================= */
 
-    friends.forEach((friend) => {
-        html += `
-            <div class="friend-card" data-friend-id="${friend.friendId}">
-                <img src="${BASE_PATH}/${friend.cardImage}.png"
-                     alt="${friend.name}"
-                     class="friend-avatar">
-                <h3 class="friend-name">${friend.name}</h3>
-                <p class="friend-description">${friend.description}</p>
-            </div>
-        `;
-    });
-
-    return html;
+function bindFriendCardClick() {
+    friendsGrid.addEventListener('click', onFriendCardClick);
 }
+
+function onFriendCardClick(event) {
+    const card = event.target.closest('.friend-card');
+    if (!card) return;
+
+    clearSelectedCards();
+    selectCard(card);
+}
+
+/* =========================
+   Работа с выделением
+========================= */
+
+function clearSelectedCards() {
+    document
+        .querySelectorAll('.friend-card.selected')
+        .forEach(card => card.classList.remove('selected'));
+}
+
+function selectCard(card) {
+    card.classList.add('selected');
+    selectedFriendId = card.dataset.friendId;
+    console.log('Выбран друг:', selectedFriendId);
+}
+
+/* =========================
+   Сохранение состояния
+========================= */
+
+export { selectedFriendId };
