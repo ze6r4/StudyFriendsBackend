@@ -20,7 +20,9 @@ async function startSession(){
         friendId: friendId,
         skillId: skillId
     };
-    await postSession(sessionData);
+    const response = await postSession(sessionData);
+    sessionData.sessionId = response.id;
+    console.log(response.id);
     localStorage.setItem('currentSession', JSON.stringify(sessionData));
     window.location.href = `${PATH}/timer/timer.html`;
 }

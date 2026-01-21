@@ -1,9 +1,11 @@
-import { postSession, getCharacter,getFriend } from '../../../shared/api.js';
+import { patchSession, getCharacter,getFriend } from '../../../shared/api.js';
 
 // ==================== КОНФИГУРАЦИЯ ====================
 const sessionDataStr = localStorage.getItem('currentSession');
 const sessionData = sessionDataStr ? JSON.parse(sessionDataStr) : null;
 console.log(sessionData);
+
+const PHASE_KEY = 'timerPhase';
 
 const DEFAULTS = {
     WORK_TIME: 25 * 60,
@@ -12,6 +14,8 @@ const DEFAULTS = {
     PLAYER_ID: 1
 };
 
+let actualRest = 0;
+let actualWork = 0;
 export const SESSION = {
     workTime: sessionData?.workMinutes
         ? sessionData.workMinutes * 60
@@ -20,7 +24,6 @@ export const SESSION = {
     breakTime: sessionData?.restMinutes
         ? sessionData.restMinutes * 60
         : DEFAULTS.BREAK_TIME,
-
     cycles: sessionData?.cycles ?? DEFAULTS.CYCLES,
     playerId: sessionData?.playerId ?? DEFAULTS.PLAYER_ID,
     skillId: sessionData?.skillId ?? null,
@@ -43,7 +46,8 @@ let animationFrameId = null;
 let currentPhase = 'WORK'; // WORK или BREAK
 let currentCycle = 1;
 
-const notify = new Audio('static/assets/audio/notify1.mp3');
+const notify = new Audio('/assets/audio/notify1.mp3');
+
 notify.volume = 0.5;
 const PATH_IMAGE = "/assets/images/characters";
 // ==================== Инициализация персонажа ====================
@@ -64,7 +68,7 @@ function startTimerPhase(phase, cycle) {
     currentPhase = phase;
     currentCycle = cycle;
 
-    updatePhaseTitle(); // ⬅️ ВАЖНО
+    updatePhaseTitle();
 
     const seconds = phase === 'WORK'
         ? SESSION.workTime
@@ -74,6 +78,7 @@ function startTimerPhase(phase, cycle) {
 
     localStorage.setItem(STORAGE_KEY, endTime);
     localStorage.setItem(CYCLE_KEY, currentCycle);
+    localStorage.setItem(PHASE_KEY, currentPhase);
 
     stopTimer();
     updateTimer();
@@ -119,7 +124,6 @@ function updateTimer() {
     const diffSeconds = Math.ceil(diffMs / 1000);
 
     if (diffSeconds <= 0) {
-        // Фаза закончилась — НЕ рисуем 00
         stopTimer();
         timerPhaseFinished();
         return;
@@ -135,49 +139,89 @@ function updatePhaseTitle() {
 
 
 function timerPhaseFinished() {
-    playNotify();
+    notifyPhase(); // 🔔 уведомление
+
+    playNotify();  // 🔊 звук (сыграет только при активной вкладке)
+
     if (currentPhase === 'WORK') {
+        actualWork += SESSION.workTime;
+
         if (currentCycle < SESSION.cycles) {
-            startTimerPhase('BREAK', currentCycle); // переходим на перерыв
+            startTimerPhase('BREAK', currentCycle);
         } else {
-            timerFinished();
+            timerFinished(true);
         }
-    } else if (currentPhase === 'BREAK') {
-        startTimerPhase('WORK', currentCycle + 1); // следующий рабочий цикл
+
+    } else {
+        actualRest += SESSION.breakTime;
+        startTimerPhase('WORK', currentCycle + 1);
     }
 }
 
-function timerFinished() {
+async function timerFinished(isCompleted) {
     alert('Сессия завершена!');
     resetTimer();
-    //sessionData.endTime =new Date().toISOString();
-    //await postSession(sessionData);
+    const newData = {
+        workTime: actualWork,
+        restTime: actualRest,
+        completed: isCompleted
+    }
+    console.log(newData);
+    await patchSession(sessionData.sessionId,newData);
 }
 
 function restoreTimer() {
-    const endTime = parseInt(localStorage.getItem(STORAGE_KEY));
-    const savedCycle = parseInt(localStorage.getItem(CYCLE_KEY)) || 1;
+    let endTime = parseInt(localStorage.getItem(STORAGE_KEY));
+    let phase = localStorage.getItem(PHASE_KEY);
+    let cycle = parseInt(localStorage.getItem(CYCLE_KEY)) || 1;
 
-    currentCycle = savedCycle;
-
-    if (endTime && endTime > Date.now()) {
-        // Восстанавливаем текущую фазу и продолжаем
-        const remainingSeconds = Math.floor((endTime - Date.now()) / 1000);
-        currentPhase = remainingSeconds > SESSION.breakTime ? 'WORK' : 'BREAK';
-        updateTimer();
-    } else {
-        renderTime(SESSION.workTime);
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(CYCLE_KEY);
-        currentPhase = 'WORK';
-        currentCycle = 1;
+    if (!endTime || !phase) {
+        resetTimer();
+        return;
     }
+
+    let now = Date.now();
+
+    while (endTime <= now) {
+        if (phase === 'WORK') {
+            actualWork += SESSION.workTime;
+            phase = 'BREAK';
+            endTime += SESSION.breakTime * 1000;
+        } else {
+            actualRest += SESSION.breakTime;
+            cycle++;
+
+            if (cycle > SESSION.cycles) {
+                timerFinished(true);
+                return;
+            }
+
+            phase = 'WORK';
+            endTime += SESSION.workTime * 1000;
+        }
+    }
+
+    currentPhase = phase;
+    currentCycle = cycle;
+
+    localStorage.setItem(STORAGE_KEY, endTime);
+    localStorage.setItem(PHASE_KEY, phase);
+    localStorage.setItem(CYCLE_KEY, cycle);
+
     updatePhaseTitle();
+    updateTimer();
 }
 
+
 // ==================== События ====================
-startBtn.addEventListener('click', () => startTimerPhase('WORK', currentCycle));
-//resetBtn.addEventListener('click', resetTimer);
+startBtn.addEventListener('click', async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+        await Notification.requestPermission();
+    }
+
+    startTimerPhase('WORK', currentCycle);
+});
+
 
 document.addEventListener('visibilitychange', () => {
     if (!document.hidden) updateTimer();
@@ -230,5 +274,21 @@ function resetTimerForTesting() {
     renderTime(SESSION.workTime);
 
     console.log('Таймер сброшен для тестирования');
+}
+function notifyPhase() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+
+    const isWork = currentPhase === 'WORK';
+
+    new Notification(
+        isWork ? 'Рабочая фаза завершена' : 'Перерыв окончен',
+        {
+            body: isWork
+                ? 'Пора отдохнуть ☕'
+                : 'Возвращаемся к работе 💻',
+            icon: '/assets/images/notify.png' // опционально
+        }
+    );
 }
 

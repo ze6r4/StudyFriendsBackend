@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SessionRep extends JpaRepository<Session, Integer> {
+public interface SessionRep extends JpaRepository<Session, Long> {
 
     @Query("SELECT s.skill.id FROM Session s WHERE s.playerId.id = :playerId")
     List<Long> findUsedSkillIds(@Param("playerId") Long playerId);

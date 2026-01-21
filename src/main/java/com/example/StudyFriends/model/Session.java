@@ -3,8 +3,6 @@ package com.example.StudyFriends.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,11 +27,14 @@ public class Session {
     @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
 
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
+    @Column(name = "work_time")
+    private Integer workTime;
 
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    @Column(name = "rest_time")
+    private Integer restTime;
+
+    @Column(name = "cycles")
+    private Integer cycles;
 
     @Column(nullable = false)
     private Boolean completed;

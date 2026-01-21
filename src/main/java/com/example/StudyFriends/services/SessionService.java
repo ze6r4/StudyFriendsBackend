@@ -19,11 +19,16 @@ public class SessionService {
         return sessionRep.save(session);
     }
 
+    public Session updateSession(Session session) {
+        return sessionRep.save(session);
+    }
+
     public List<Session> getAllSessions() {
         return sessionRep.findAll();
     }
 
-    public Optional<Session> getSessionById(Integer id) {
+    public Optional<Session> getSessionById(Long id) {
         return sessionRep.findById(id);
     }
+
 }
